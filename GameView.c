@@ -8,16 +8,8 @@
 #include <string.c>
 #include "Map.h"
      
-typedef struct playerData {
-    int points; // life or health
-    // TODO:trail of player
-} *player;
-
 struct gameView {
-    int turn;
-    int score;
-    player players[NUM_PLAYERS];
-    Map map;
+    char* pastPlays;
 };
      
 
