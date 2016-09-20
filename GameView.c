@@ -34,15 +34,17 @@ void disposeGameView(GameView toBeDeleted)
 // Get the current round
 Round getRound(GameView currentView)
 {
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return 0;
+    int turn = (strlen (currentView->pastPlays) + 1) / 8;
+    int roun = turn / 5;
+    return roun;
 }
 
 // Get the id of current player - ie whose turn is it?
 PlayerID getCurrentPlayer(GameView currentView)
 {
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return 0;
+    int turn = (strlen (currentView->pastPlays) + 1) / 8;
+    int currPlayer = turn % 5;
+    return currPlayer;
 }
 
 // Get the current score
