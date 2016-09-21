@@ -74,7 +74,15 @@ LocationID getLocation(GameView currentView, PlayerID player)
 void getHistory(GameView currentView, PlayerID player,
                             LocationID trail[TRAIL_SIZE])
 {
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+    int roun = getRound (currentView);
+    if ((roun * NUM_PLAYERS + player + 1) * 8 <= strlen (currentView->pastPlays) + 1) roun ++;
+    int start = ((roun - 6) * NUM_PLAYERS + player) * 8;
+    for (int counter = 6; counter > 0; counter --) {
+       char locationCode[2];
+       locationCode[0] = currentView->pastPlays[start + 1];
+       locationCode[1] = currentView->pastPlays[start + 2];
+       trail[counter - 1] = abbrevToID (locationCode);
+    }
 }
 
 //// Functions that query the map to find information about connectivity
