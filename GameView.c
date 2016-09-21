@@ -82,6 +82,7 @@ void getHistory(GameView currentView, PlayerID player,
        locationCode[0] = currentView->pastPlays[start + 1];
        locationCode[1] = currentView->pastPlays[start + 2];
        trail[counter - 1] = abbrevToID (locationCode);
+       start += (NUM_PLAYERS * 8);
     }
 }
 
