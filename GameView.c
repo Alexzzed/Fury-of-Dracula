@@ -1,6 +1,7 @@
 // GameView.c ... GameView ADT implementation
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include "Globals.h"
 #include "Game.h"
@@ -10,14 +11,34 @@
      
 struct gameView {
     char* pastPlays;
+    int trails[NUM_PLAYERS][TRAIL_SIZE];
 };
      
+static void updateTrail(GameView gameView, PlayerID p, LocationID location){
+	int i = TRAIL_SIZE - 2;
+	while (i >= 0) {
+	   gameView->trails[p][i+1] = gameView->trails[p][i];
+       i--;	   		
+	}
+	gameView->trails[p][0] = location;
+}
 
 // Creates a new GameView to summarise the current state of the game
 GameView newGameView(char *pastPlays, PlayerMessage messages[])
 {
     GameView gameView = malloc(sizeof(struct gameView));
     gameView->pastPlays=strdup(pastPlays);
+    
+    int i = 0;
+    int j = 0;
+    while (i < NUM_PLAYER) {
+       while (j < TRAIL_SIZE){
+          gameView->trails[i][j] = UNKNOWN_LOCATION;
+          j++;
+       }
+       i++;
+    }
+    
     return gameView;
 }
      
@@ -64,8 +85,53 @@ int getHealth(GameView currentView, PlayerID player)
 // Get the current location id of a given player
 LocationID getLocation(GameView currentView, PlayerID player)
 {
-    //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    return 0;
+   // go through pastPlays
+   int cur = 0;
+   int strlen = strlen(pastPlays);
+   while (cur < strlen) {
+	   PlayerID p = 0;
+	   switch (pastPlays[cur]) {
+		 case G: p = PLAYER_LORD_GODALMING;
+		 break;
+           case S: p = PLAYER_DR_SEWARD;
+           break;
+           case H: p = PLAYER_VAN_HELSING;
+           break;
+           case M: p = PLAYER_MINA_HARKER;
+           break;
+           case D: p = PLAYER_DRACULA;
+           break;
+           default: break;		   
+	   }
+	   
+	  char string[3] = {pastPlays[cur + 1], pastPlays[cur + 2], '\0'};
+      	 if (p == PLAYER_DRACULA) {
+			 if (!strcmp("C?", string)) {
+				 updateTrail(gameView, p, CITY_UNKNOWN);
+		      } else if (!strcmp("S?", string)) {
+				 updateTrail(gameView, p, SEA_UNKNOWN);
+			 } else if (!strcmp("HI", string)) {
+				 updateTrail(gameView, p, HIDE);
+			 } else if (!strcmp("D1", string)) {
+				 updateTrail(gameView, p, DOUBLE_BACK_1);
+			 } else if (!strcmp("D2", string)) {
+				 updateTrail(gameView, p, DOUBLE_BACK_2);
+			 } else if (!strcmp("D3", string)) {
+				 updateTrail(gameView, p, DOUBLE_BACK_3);
+			 } else if (!strcmp("D4", string)) {
+				 updateTrail(gameView, p, DOUBLE_BACK_4);
+			 } else if (!strcmp("D5", string)) {
+				 updateTrail(gameView, p, DOUBLE_BACK_5);
+			 } else if (!strcmp("TP", string)) {
+				 updateTrail(gameView, p, TELEPORT);
+			 }				 
+		 } else {
+			 updateTrail(gameView, p, abbrevToID(string)); //in place.c
+		 }  
+   }
+        
+    return currentView->trails[player][0];// go through pastPlays
+  
 }
 
 //// Functions that return information about the history of the game
